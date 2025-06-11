@@ -50,9 +50,9 @@ peer lifecycle chaincode install voting.tar.gz
 export CC_PACKAGE_ID=$(peer lifecycle chaincode queryinstalled | grep "voting_1" | awk '{print $3}' | sed 's/.$//')
 ```
 
-# Org2 환경 변수로 변경 및 승인
+### Org2 환경 변수로 변경 및 승인
 
-# mychannel 채널에 voting 체인코드를 승인.
+### mychannel 채널에 voting 체인코드를 승인.
 
 ```bash
 export CORE_PEER_TLS_ENABLED=true
@@ -64,7 +64,7 @@ export CORE_PEER_ADDRESS=localhost:7051
 peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name voting --version 1.0 --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"
 ```
 
-# Org2 환경 변수로 변경 및 승인
+### Org2 환경 변수로 변경 및 승인
 
 ```bash
 export CORE_PEER_LOCALMSPID="Org2MSP"
@@ -76,33 +76,33 @@ export CORE_PEER_ADDRESS=localhost:9051
 peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name voting --version 1.0 --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"
 ```
 
-# 4. 체인코드 정의를 채널에 커밋
+## 4. 체인코드 정의를 채널에 커밋
 
 ```bash
 peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name voting --version 1.0 --sequence 1 --init-required --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" --peerAddresses localhost:7051 --tlsRootCertFiles "${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt" --peerAddresses localhost:9051 --tlsRootCertFiles "${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
 ```
 
-# 체인코드 초기화
+## 체인코드 초기화
 
-# 후보자 리스트를 JSON 문자열로 전달합니다.
+### 후보자 리스트를 JSON 문자열로 전달합니다.
 
 ```bash
 peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n voting --isInit -c '{"function":"InitLedger","Args":["[\"Candidate A\",\"Candidate B\",\"Candidate C\"]"]}' --peerAddresses localhost:7051 --tlsRootCertFiles "${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt" --peerAddresses localhost:9051 --tlsRootCertFiles "${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
 ```
 
-# 투표 현황 조회
+### 투표 현황 조회
 
 ```bash
 peer chaincode query -C mychannel -n voting -c '{"Args":["queryAllCandidates"]}'
 ```
 
-# Org1의 사용자가 'Candidate A'에게 투표
+### Org1의 사용자가 'Candidate A'에게 투표
 
 ```bash
 peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n voting -c '{"function":"voteForCandidate","Args":["Candidate A"]}' --peerAddresses localhost:7051 --tlsRootCertFiles "${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt" --peerAddresses localhost:9051 --tlsRootCertFiles "${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
 ```
 
-# 투표 현황 조회
+### 투표 현황 조회
 
 ```bash
 peer chaincode query -C mychannel -n voting -c '{"Args":["queryAllCandidates"]}'
